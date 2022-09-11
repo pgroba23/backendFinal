@@ -11,7 +11,7 @@ export const getAllbyId = async (req, res) => {
 
 export const saveCart = async (req, res) => {
 	const producto = await productosRepo.listar(req.body.productId);
-	if (!producto) {
+	if (!producto || producto.length === 0) {
 		res.status(404).json({ error: 'Producto no encontrado' });
 		return;
 	}
