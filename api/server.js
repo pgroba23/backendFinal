@@ -1,8 +1,9 @@
 import express from 'express';
 
 import { Server as HttpServer } from 'http';
+import { Server as IOServer } from 'socket.io';
 import { engine } from 'express-handlebars';
-import { serverSocket } from '../routes/serverSocket.js';
+import { manejarSocket } from '../routes/serverSocket.js';
 import { pedidos } from '../routes/pedidos.js';
 import { info } from '../routes/info.js';
 import { carritos } from '../routes/carritos.js';
@@ -12,9 +13,11 @@ import { avatar } from '../routes/avatar.js';
 import { clusterFunction } from '../cluster/cluster.js';
 import { workerFunction } from '../cluster/worker.js';
 import logger from '../log4js/logger.js';
+import { sendBroadcast } from '../controllers/chatController.js';
 
 const app = express();
 const httpServer = new HttpServer(app);
+const io = new IOServer(httpServer);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,7 +32,10 @@ app.engine('handlebars', engine(handlebarsConfig));
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
-serverSocket(httpServer);
+io.on('connection', (socket) => {
+	sendBroadcast(socket);
+	manejarSocket(socket, io.sockets);
+});
 
 app.use('/', loginRoute);
 app.use('/api/users', registerRoute);
