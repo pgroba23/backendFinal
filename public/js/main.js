@@ -17,7 +17,7 @@ const chatEntity = new normalizr.schema.Entity(
 const formChat = document.getElementById('form-chat');
 formChat.addEventListener('submit', (e) => {
 	e.preventDefault();
-
+	console.log('enviando mensaje');
 	const chat = {
 		id: new Date().getTime().toString(),
 		mensaje: formChat[6].value,

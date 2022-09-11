@@ -50,7 +50,7 @@ app.all('*', (req, res) => {
 });
 
 if (process.argv[2] == 'cluster') {
-	clusterFunction(app);
+	clusterFunction(httpServer);
 } else {
-	workerFunction(app);
+	workerFunction(httpServer);
 }
